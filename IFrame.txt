@@ -1,0 +1,33 @@
+    public static final Target OBSERVATION = Target.the("Observation")
+            .located(By.xpath("//body[@class='cke_editable cke_editable_themed cke_contents_ltr cke_show_borders']//p"));
+
+    public static final Target IFRAME = Target.the("iframe")
+            .located(By.xpath("//iframe[@class='cke_wysiwyg_frame cke_reset']"));
+
+    public static final Target SUBMIT = Target.the("submit")
+            .located(By.id("add"));
+
+
+
+ actor.attemptsTo(
+                Enter.theValue(offerData.get(INDEX).getEmail()).into(EMAIL),
+                Enter.theValue(offerData.get(INDEX).getPassword()).into(PASSWORD),
+                Click.on(LOGINBUTTON),
+                Scroll.to(OFFERBUTTON),
+                Click.on(OFFERBUTTON),
+                Click.on(MANAGEOFFERT),
+                Click.on(ADDBUTTONOFFERT),
+                Enter.theValue(offerData.get(INDEX).getOffertitle()).into(OFFERTITLE),
+                Enter.theValue(offerData.get(INDEX).getPhone()).into(OFFERPHONE),
+                Enter.theValue(offerData.get(INDEX).getEmailoffer()).into(OFFEREMAIL),
+                Enter.theValue(offerData.get(INDEX).getOfferprice()).into(OFFERPRICE),
+                Enter.theValue(offerData.get(INDEX).getFrom()).into(OFROM),
+                Enter.theValue(offerData.get(INDEX).getTo()).into(OTO),
+                Click.on(CLICKTWO)
+        );
+
+        BrowseTheWeb.as(actor).getDriver().switchTo().frame(IFRAME.resolveFor(actor));
+        actor.attemptsTo(Enter.theValue(offerData.get(INDEX).getDescription()).into(OBSERVATION));
+        BrowseTheWeb.as(actor).getDriver().switchTo().defaultContent();
+        actor.attemptsTo(Click.on(SUBMIT));
+    }
