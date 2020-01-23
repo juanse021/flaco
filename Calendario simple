@@ -1,0 +1,70 @@
+package co.com.choucair.certification.bancolombia.interactions;
+
+import co.com.choucair.certification.bancolombia.userinterface.Page;
+import net.serenitybdd.core.pages.WebElementFacade;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Interaction;
+import net.serenitybdd.screenplay.targets.Target;
+
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+
+public class SelectFromCalendar implements Interaction {
+
+    private Target nameMonthTarget;
+    private Target listOfDays;
+    private String dateString;
+
+
+    private SelectFromCalendar(Target nameMonthTarget, Target listOfDays, String dateString) {
+        this.nameMonthTarget = nameMonthTarget;
+        this.listOfDays = listOfDays;
+        this.dateString = dateString;
+    }
+
+    public static SelectFromCalendar the(Target nameMonthTarget, Target listOfDays, String dateString) {
+        return new SelectFromCalendar(nameMonthTarget, listOfDays, dateString);
+    }
+
+
+    @Override
+    public <T extends Actor> void performAs(T actor) {
+
+        boolean find = true;
+
+        String[] ddmmyy = dateString.split("/");
+        String day = ddmmyy[0];
+        String month = ddmmyy[1];
+        String year = ddmmyy[2];
+        Calendar calendar;
+        calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH, (Integer.parseInt(month) - 1));
+        Locale locale = new Locale("es", "ES");
+        String monthString = calendar.getDisplayName(calendar.MONTH, calendar.LONG, locale);
+
+
+
+        while (find) {
+
+            WebElementFacade element = nameMonthTarget.resolveFor(actor);
+            List<WebElementFacade> days = listOfDays.resolveAllFor(actor);
+            String monthYear = element.getTextValue();
+            String monthYearCompare = monthString + " " + year;
+
+
+            if (monthYear.equals(monthYearCompare)) {
+                for (int i = 0; i < days.size(); i++) {
+                    if (days.get(i).getTextValue().equals(day)) {
+                        days.get(i).click();
+                        break;
+                    }
+                }
+                find = false;
+            } else {
+                Page.SIGUIENTEMES.resolveFor(actor).click();
+            }
+        }
+    }
+}
